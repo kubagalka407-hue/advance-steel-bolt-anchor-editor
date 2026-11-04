@@ -9,6 +9,13 @@ Zewnętrzny program do edycji katalogów śrub i kotew w bazie Advance Steel, w 
 Pracuje na bazie AstorBase (SQL Server LocalDB). Testowany: Advance Steel 2026, wersja krajowa INT.
 Inne wersje programu Advance Steel i inne wersje krajowe nie były sprawdzane.
 
+JAK ZGŁASZAĆ PROBLEMY I UWAGI
+Gdy coś nie działa, jest niejasne albo masz pomysł: kliknij "Zgłoś problem" (prawy górny róg każdego okna i kreatora) albo naciśnij F8.
+Wybierz rodzaj, opisz własnymi słowami, co chciałeś zrobić i co się stało, i kliknij "Zapisz zgłoszenie". Program sam dołączy zrzut
+okna, wartości wpisane w polach, zawartość tabel, ostatnie kliknięcia i błędy programu - nic nie wysyła przez sieć, tylko zapisuje
+plik ZIP w folderze "zgloszenia" obok programu (przycisk "Otwórz folder" go pokaże). Przeciągnij ten plik do rozmowy z Claude.
+Zgłoszenie rób w tym oknie, w którym widać problem (nie zamykaj kreatora). Błędy programu trafiają też do pliku bledy.log.
+
 WYMAGANIA
 - Windows i Advance Steel z bazą w LocalDB (sprawdzone: Advance Steel 2026 INT)
 - Internet przy pierwszym uruchomieniu (doinstaluje Pythona, moduł pyodbc i sterownik ODBC)
@@ -43,7 +50,34 @@ URUCHOMIENIE (bez instalatora)
    ostatnio wybrane normy zostają.
 
 UKŁAD OKNA
-Trzy zakładki główne:
+Po uruchomieniu wybierasz język (Polski / English), potem ekran startowy: "Kotwy" albo "Śruby".
+- Śruby: (1) "Dodaj zestaw do śruby" - kreator: norma, klasy i średnice -> skład (podkładki, nakrętki) -> nazwa i zapis;
+  (2) "Skopiuj całą klasę śrub" - kreator: nowa klasa z tymi samymi wymiarami i zestawami co istniejąca;
+  (3) "Nowa podkładka / nakrętka" - nowy element katalogu z typowymi wymiarami (otwiera narzędzie eksperckie).
+- Kotwy: (1) "Dodaj set do kotew" - kreator: norma + zestaw-wzór + klasy + średnice -> nowy zestaw nakrętek i podkładek dla wybranych kotew
+  (albo zmiana/nadpisanie zestawu w Twoich kotwach; fabryczne nigdy nie są nadpisywane);
+  (2) "Dodaj długości do kotew" - kreator: kotwy z danym zestawem i klasami materiałów -> nowe długości (wiele kotew naraz);
+  (3) "Nowa kotwa" - kreator: norma -> typ, wymiary, długości -> skład zestawu (nad blachą / pod blachą / koniec kotwy) -> zapis;
+  (4) "Z istniejącej / średnica / klasa" - nowa kotwa na wzorcu albo nowa średnica / klasa.
+- Katalog kotew / Katalog śrub (pierwsza karta w Kotwach i Śrubach) - widok jak w Tekli, wszystko w jednym oknie: po lewej norma (rodzina),
+  pośrodku tabela pozycji (szare wiersze = fabryczne, nie do zmiany), po prawej rysunek zaznaczonej pozycji. Przyciski: "Nowa kotwa" / "Nowy zestaw",
+  "Kopiuj jako nową" / "Kopiuj zestaw", "Dodaj / zmień zestaw", "Dopisz długości", "Zmień mój zestaw", "Skopiuj klasę", "Usuń zaznaczone"
+  (tylko własne). Przyciski otwierają kreatory z już wybraną normą, klasą i średnicami - zapis, kopia zapasowa i cofanie działają jak zawsze.
+- Filtry przy wyborze kotew (kreatory "Dodaj set" / "Dodaj długości" i Katalog kotew): "Filtr: typ kotwy" i "Filtr: klasa materiału" zawężają listę
+  norm do tych, które mają takie kotwy, a po wybraniu normy zostawiają tylko pasujące kotwy; "✕" czyści filtry.
+- Podgląd kotwy: lista nad rysunkiem wybiera kotwę (średnica / klasa / zestaw), a lista "Długość kotwy" - którą jej długość narysować.
+- Pytajniki "?": niebieski "?" obok pola (kliknij) tłumaczy, co wpisać; przycisk "? Pomoc" w nagłówku opisuje całą stronę.
+- Moje wpisy i cofanie: lista tego, co dodałeś (kotwy, zestawy śrub), usuwanie własnych wpisów oraz przycisk
+  "Cofnij ostatni zapis" (cofa tylko ostatnią zmianę; dziennik w pliku bolt_editor_journal.json, do 50 wpisów).
+- Ustawienia: połączenie z bazą (instancja, wersja), właściciel nowych wpisów, folder kopii zapasowych, tryb ekspercki.
+- Podgląd: po prawej stronie każdego kreatora (kotwy i śruby) jest stały rysunek kotwy albo śruby (z podkładkami i nakrętkami),
+  który zmienia się razem z Twoimi wyborami. W "Moje wpisy" zaznaczona kotwa / zestaw też ma rysunek; "Nowa podkładka / nakrętka" rysuje element.
+- Tabele: kliknij nagłówek kolumny, aby posortować (od najmniejszej do największej; drugie kliknięcie = odwrotnie). Pole "Filtr" zawęża
+  wiersze: tekst albo liczby (>=20, <=30, >10, =16, zakres 10..20), z wyborem kolumny; "✕" czyści filtr. Przycisk "Ø ▲/▼" przy liście
+  średnic zmienia ich kolejność.
+- Przycisk "? Pomoc" na ekranach i "?" w krokach kreatorów opisują, co robi dana funkcja i co zostanie zapisane.
+- Przycisk "Menu główne" wraca do ekranu startowego; "Zaawansowane" otwiera pełny dawny interfejs z zakładkami:
+Trzy zakładki główne (w trybie zaawansowanym):
 - Kotwy - konfigurator kotew: wybierz normę, zaznacz kotwę-wzorzec i użyj "+ Długość", "+ Średnica" albo "+ Klasa".
 - Zestawy śrub - zestaw nakrętek i podkładek dla normy śruby (widok jak w Tekli).
 - Narzędzia - rzadsze funkcje: nowa podkładka / nakrętka, normy i klasy śrub, kopia normy, kopiowanie kotew,
@@ -71,6 +105,11 @@ TEST 1: DODANIE DŁUGOŚCI / ŚREDNICY / KLASY DO KOTWY (zakładka "Kotwy")
 Inne okna kotew (przycisk "Dodaj kotwę..." i menu "Więcej"): pojedyncza kotwa w normie, kilka średnic naraz
 (dwuklik w komórkę tabeli = edycja w komórce, Ctrl+V = wklejenie z Excela: jedna kolumna to długości, kilka kolumn to
 długość i kolejne wymiary), nowa norma kotwy. Własne kotwy (zielone) edytujesz przyciskiem "Edytuj zaznaczoną...".
+
+SZYBKA DROGA (najczęstszy przypadek): w zakładce "Zestawy śrub" wybierz normę i kliknij "★ Szybko: nowy zestaw z
+wzoru...". Wskaż zestaw wzorcowy i klasę, zaznacz średnice, w razie potrzeby zmień skład (podkładki/nakrętki),
+wpisz NOWY klucz zestawu i kliknij "Utwórz nowy zestaw". Reszta (długości śrub, źródło) pochodzi z normy i wzoru.
+Potem pojawi się zwykłe potwierdzenie zapisu.
 
 TEST 2: ZESTAW ŚRUB (zakładka "Zestawy śrub")
 1. Wybierz normę 4014. Powinien pojawić się rysunek i skład (podkładki, nakrętka).

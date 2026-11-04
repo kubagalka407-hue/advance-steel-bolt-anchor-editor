@@ -11,6 +11,14 @@ An external program for editing the bolt and anchor catalogs in the Advance Stee
 It works on the AstorBase database (SQL Server LocalDB). Tested with: Advance Steel 2026, national version INT.
 Other Advance Steel versions and other national versions have not been checked.
 
+HOW TO REPORT PROBLEMS AND COMMENTS
+When something does not work, is unclear, or you have an idea: click "Report a problem" (top right of every window and wizard) or press F8.
+Choose the kind, describe in your own words what you wanted to do and what happened, then click "Save report". The program attaches a
+screenshot of the window, the values typed into fields, the table contents, your latest clicks and program errors - nothing is sent over
+the network, it only saves a ZIP file in the "zgloszenia" folder next to the program ("Open folder" shows it). Drag that file into the
+conversation with Claude. Make the report in the window where the problem is visible (do not close the wizard first). Program errors
+are also written to bledy.log.
+
 REQUIREMENTS
 - Windows and Advance Steel with its database in LocalDB (verified: Advance Steel 2026 INT)
 - Internet on the first run (installs Python, the pyodbc module and the ODBC driver if they are missing)
@@ -46,7 +54,34 @@ RUNNING WITHOUT THE INSTALLER
    last selected standards are kept.
 
 WINDOW LAYOUT
-Three main tabs:
+After start you choose the language (Polski / English), then the start screen: "Anchors" or "Bolts".
+- Bolts: (1) "Add a set to a bolt" - wizard: standard, grades and diameters -> composition (washers, nuts) -> name and
+  save; (2) "Copy a whole bolt grade" - wizard: a new grade with the same dimensions and sets as an existing one;
+  (3) "New washer / nut" - a new catalog element with typical dimensions (opens the expert tool).
+- Anchors: (1) "Add set to anchors" - wizard: standard + source set + classes + diameters -> a new nut/washer set for the selected anchors
+  (or change/overwrite the set in your own anchors; factory anchors are never overwritten);
+  (2) "Add lengths to anchors" - wizard: anchors with a given set and material classes -> new lengths (many anchors at once);
+  (3) "New anchor" - wizard: standard -> type, dimensions, lengths -> set composition (above plate / below plate / anchor end) -> save;
+  (4) "From existing / diameter / class" - new anchor based on an existing one, or a new diameter / class.
+- Anchor catalog / Bolt catalog (the first card in Anchors and Bolts) - a Tekla-style view in one window: the standard (family) on the left,
+  the table of items in the middle (grey rows = factory, read-only), the drawing of the selected item on the right. Buttons: "New anchor" / "New set",
+  "Copy as new" / "Copy set", "Add / change set", "Add lengths", "Change my set", "Copy grade", "Delete selected" (own entries only). The buttons open
+  the wizards with the standard, grade and diameters already chosen - saving, backups and undo work as before.
+- Filters when choosing anchors (the "Add set" / "Add lengths" wizards and the Anchor catalog): "Filter: anchor type" and "Filter: material grade" narrow the
+  list of standards to those with such anchors and, after a standard is chosen, keep only the matching anchors; "✕" clears the filters.
+- Anchor preview: the list above the drawing picks the anchor (diameter / grade / set) and the "Anchor length" list picks which of its lengths is drawn.
+- "?" hints: the blue "?" next to a field (click it) explains what to enter; the "? Help" button in the header describes the whole page.
+- My entries and undo: a list of what you added (anchors, bolt sets), deleting your own entries and an "Undo last save"
+  button (undoes only the last change; journal in bolt_editor_journal.json, up to 50 entries).
+- Settings: database connection (instance, version), owner of new entries, backup folder, expert mode.
+- Preview: on the right of every wizard (anchors and bolts) there is a permanent drawing of the anchor or bolt (with washers and nuts)
+  that changes with your choices. In "My entries" a selected anchor / set also has a drawing; "New washer / nut" draws the element.
+- Tables: click a column header to sort (smallest to largest; a second click reverses). The "Filter" box narrows the rows: text or numbers
+  (>=20, <=30, >10, =16, range 10..20), with a column selector; "✕" clears the filter. The "Ø ▲/▼" button next to a diameter list changes
+  their order.
+- The "? Help" button on screens and "?" in wizard steps explain what a function does and what will be written.
+- "Main menu" returns to the start screen; "Advanced" opens the full former interface with tabs:
+Three main tabs (in advanced mode):
 - Anchors - anchor configurator: pick a standard, select a template anchor and use "+ Length", "+ Diameter" or "+ Class".
 - Bolt sets - the nut and washer set for a bolt standard (Tekla-like view).
 - Tools - less frequent functions: new washer / nut, bolt standards and classes, standard copy, anchor copy,
@@ -77,6 +112,11 @@ Other anchor windows ("Add anchor..." button and the "More" menu): a single anch
 at once (double-click a table cell = edit in the cell, Ctrl+V = paste from Excel: one column is lengths, several
 columns are the length and the following dimensions), a new anchor standard. Your own anchors (green) are edited
 with the "Edit selected..." button.
+
+QUICK WAY (the most common case): in the "Bolt sets" tab select the standard and click "★ Quick: new set from a
+template...". Pick the template set and grade, select the diameters, change the composition (washers/nuts) if needed,
+enter a NEW set key and click "Create new set". The rest (bolt lengths, source) comes from the standard and the
+template. The usual save confirmation follows.
 
 TEST 2: BOLT SET ("Bolt sets" tab)
 1. Select standard 4014. The drawing and the composition (washers, nut) should appear.
